@@ -29,8 +29,8 @@ export const slides = [
     type: 'title',
     kicker: 'DPE project · Grüezi Deutsch',
     title: 'Grüezi Deutsch',
-    subtitle: 'Helping newcomers practise the German Switzerland actually speaks',
-    notes: 'Our goal: help newcomers integrate in Switzerland better and faster.',
+    subtitle: 'Helping newcomers practise the German in Switzerland',
+    notes: 'Our Purpose: To make integration easier and empower newcomers to feel confident in communicating.',
   },
 
   {
