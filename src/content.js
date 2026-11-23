@@ -16,6 +16,15 @@
 //    agentflow  conceptual agent diagram with repair loop
 //    layers     clickable list A, B, C… with a detail panel
 //    architecture  learner → system blocks → output
+//  Development-process types:
+//    phases       the 5 phases as a snake; click a phase for its detail
+//    steps        boxes left → right; optional input, output, group frame,
+//                 loop line, tone: 'orange' | 'green' | 'red', split: [a, b]
+//    benchmark    bar chart + numbers table
+//    beforeafter  rows of Before → After numbers
+//    features     cards with an emoji icon
+//  `question:` adds the green guiding question under a title.
+//  `phase: 1…5` shows the phase tracker in the top-right corner.
 //
 //  Optional on every slide:
 //    notes: 'Speaker notes (press Alt/Option+P for presenter view)'
@@ -24,13 +33,16 @@
 
 export const deckTitle = 'Grüezi Deutsch — How the app works';
 
+// Names in the phase tracker (top right of the development-process slides).
+export const phaseLabels = ['Understand', 'Engineer', 'Evaluate', 'Refine', 'Deploy'];
+
 export const slides = [
   {
     type: 'title',
     kicker: 'DPE project · Grüezi Deutsch',
     title: 'Grüezi Deutsch',
-    subtitle: 'Helping newcomers practise German in Switzerland',
-    notes: 'Our Purpose: To make integration easier and empower newcomers to feel confident in communicating.',
+    subtitle: 'Helping newcomers practise the German Switzerland actually speaks',
+    notes: 'Our goal: help newcomers integrate in Switzerland better and faster.',
   },
 
   {
@@ -275,6 +287,359 @@ export const slides = [
       { heading: 'Observability', sub: 'Checks · metrics' },
     ],
     bottom: { heading: 'Personalized learning output', sub: 'Dialogue · Vocabulary explanations · Exercises' },
+  },
+
+  // ─── How we built it: the 5-phase development process ───────────
+
+  {
+    type: 'phases',
+    title: 'How we built it: five phases',
+    phases: [
+      { heading: 'Solution Understanding', question: 'What does a good expert do?', verb: 'Understand',
+        logic: 'define what good language-learning support looks like.' },
+      { heading: 'Prompt Engineering', question: 'How do we teach AI to do it?', verb: 'Engineer',
+        logic: 'turn that knowledge into prompts, instructions and a workflow.' },
+      { heading: 'Prompt Evaluation', question: 'How well does AI perform?', verb: 'Evaluate',
+        logic: "measure the AI's performance against evidence and criteria." },
+      { heading: 'Iteration & Refinement', question: 'How do we improve it?', verb: 'Refine',
+        logic: 'identify failure patterns and improve prompts, code and models.' },
+      { heading: 'Prototype Deployment', question: 'Can learners use it?', verb: 'Deploy',
+        logic: 'make the improved system accessible as an app.' },
+    ],
+    loopLabel: 'Future improvements',
+    hint: 'Understand what a good expert does → teach AI to imitate it → test → improve → put it into a working app. Click a phase.',
+    notes: `Grüezi Deutsch follows a cycle: understand what a good human expert does, teach AI to imitate that process, test how well it performs, improve it, and put it into a working app.
+Each phase has evidence behind it, and some things still await validation. Click each box to show its one-line logic.`,
+  },
+
+  {
+    type: 'steps',
+    phase: 1,
+    title: "Phase 1 · The expert's process",
+    question: "What would an ideal human expert do to solve the learner's problem?",
+    steps: [
+      { heading: "Understand the learner's situation", sub: 'e.g. doctor, post office, supermarket' },
+      { heading: 'Adapt language to CEFR level', sub: 'Vocabulary, sentence structures, difficulty' },
+      { heading: 'Integrate Swiss-specific language', sub: 'Velo, parkieren, Grüezi …' },
+      { heading: 'Repeat and practise target words', sub: 'Meet each word several times' },
+      { heading: 'Check and deliver a natural dialogue', sub: 'Quality, relevance, appropriateness', tone: 'green' },
+    ],
+    note: 'The expert: German teachers for adult A1–B1 learners in Switzerland.',
+    notes: `Our expert is a German teacher for adult A1 to B1 learners in Switzerland.
+A good teacher understands the situation, adapts the language to the level, brings in Swiss words, repeats the target words, and checks that the dialogue sounds natural.`,
+  },
+
+  {
+    type: 'table',
+    phase: 1,
+    title: 'Phase 1 · From expert knowledge to a system',
+    columns: ['Human expert', 'Grüezi Deutsch equivalent'],
+    rows: [
+      ["Teacher's vocabulary knowledge", 'CEFR vocabulary lists'],
+      ['Knowledge of Swiss expressions', 'Helvetism database'],
+      ["Teacher's level assessment", 'Python level-checking functions'],
+      ["Teacher's correction", 'Automated checker + repair loop'],
+      ["Teacher's learning materials", 'Dialogue and exercises'],
+    ],
+    note: "This is the expert-inspired design hypothesis. It does not mean teachers have already validated the app's behaviour.",
+    notes: `Each part of the teacher's knowledge becomes a part of the system.
+Be clear: this is our design hypothesis. Teachers have not yet validated how the app behaves.`,
+  },
+
+  {
+    type: 'bullets',
+    phase: 1,
+    title: 'Ideal outcome: a measurable good dialogue',
+    reveal: 'click',
+    items: [
+      "≤ 5% of words above the learner's level",
+      'No ß in the displayed text',
+      'Every target word used at least twice',
+      'Natural, relevant Swiss dialogue',
+      'Words that can be practised and remembered',
+    ],
+    notes: `Instead of "it sounds good", we defined what a good dialogue is in numbers the code can check.
+The first three are fully measurable; the last two still need people to judge them.`,
+  },
+
+  {
+    type: 'steps',
+    phase: 2,
+    title: 'Phase 2 · Prompt engineering',
+    question: "How do we instruct an AI to imitate the expert's process?",
+    input: { heading: 'Input', sub: 'Situation + A1/A2/B1 + target words' },
+    group: 'Prompt chain',
+    steps: [
+      { heading: '1. Planner', sub: 'Plans turns and word placement', tone: 'orange' },
+      { heading: '2. Writer', sub: 'Creates the dialogue from the plan', tone: 'orange' },
+      { heading: '3. Checker', sub: 'Python checks language criteria', tone: 'orange' },
+      { heading: '4. Repairer', sub: 'Fixes flagged issues', tone: 'orange' },
+    ],
+    output: { heading: 'Output', sub: 'Improved dialogue' },
+    note: 'Instead of one big prompt, the job is split into smaller tasks.',
+    notes: `We do not ask the AI to do everything in one prompt.
+The planner decides the turns and where each target word goes, the writer writes, Python checks, and the repairer fixes only what was flagged.`,
+  },
+
+  {
+    type: 'table',
+    phase: 2,
+    title: 'Phase 2 · Prompt techniques we use',
+    size: 'small',
+    columns: ['Technique', 'Purpose'],
+    rows: [
+      ['Role prompting', 'Tells the model what role it plays'],
+      ['CEFR descriptions', 'Gives the model clear language-level requirements'],
+      ['Few-shot prompting', 'Provides an example dialogue to guide output'],
+      ['Prompt chaining', 'Splits planning, writing and repairing into separate tasks'],
+      ['Structured JSON', 'Makes output easier for Python to process'],
+      ['Target word placement', 'Tells the planner where the words should occur'],
+      ['Automated feedback', 'Sends failures back to the model for correction'],
+    ],
+    notes: 'Seven techniques. The most important ones for quality were prompt chaining, target word placement and automated feedback.',
+  },
+
+  {
+    type: 'stats',
+    phase: 2,
+    title: 'Initial results (21 November)',
+    items: [
+      { value: 0, suffix: ' / 15', label: 'first drafts used every target word at least twice' },
+      { value: 139, label: 'words at most per dialogue (range 41–139): too short' },
+    ],
+    note: 'B1 dialogues also often had very short, A1-like sentences.',
+    notes: `Our first drafts were not good enough. Not one of fifteen used every target word twice, the dialogues were short, and B1 sounded like A1.
+This is why the next phases matter.`,
+  },
+
+  {
+    type: 'benchmark',
+    phase: 2,
+    title: 'Model comparison',
+    question: 'Results for 36 dialogues per model using the full loop',
+    unit: '%',
+    data: [
+      { label: 'DeepSeek', value: 100, highlight: true },
+      { label: 'Llama 8B', value: 78 },
+      { label: 'GPT-4o-mini', value: 78 },
+    ],
+    columns: ['Model', 'Pass rate', 'Sec/dialogue', 'Cost/dialogue'],
+    rows: [
+      ['DeepSeek', '100%', '73', '$0.0095'],
+      ['Llama 8B', '78%', '6', '$0.0003'],
+      ['GPT-4o-mini', '78%', '19', '$0.0012'],
+    ],
+    note: "DeepSeek's planner placed all target words correctly in 36/36 dialogues (GPT-4o-mini: 4/36). Reported experimental results, not independently validated benchmarks.",
+    notes: `DeepSeek passed every dialogue, but it is the slowest. Llama is fastest and cheapest but passes 78%.
+This is evidence from our experiment, not proof that DeepSeek is better in general.`,
+  },
+
+  {
+    type: 'steps',
+    phase: 3,
+    title: 'Phase 3 · Prompt evaluation',
+    question: 'How do we know whether the prompts and generated dialogues are actually good?',
+    steps: [
+      { heading: 'Generate dialogue' },
+      { heading: 'Compare against criteria', sub: 'Vocabulary level · target words · grammar · length · Swiss language' },
+      { split: [
+        { heading: 'Pass', sub: 'Criteria met', tone: 'green' },
+        { heading: 'Fail', sub: 'Criteria not met', tone: 'red' },
+      ] },
+      { heading: 'Analyse results', sub: 'Find recurring weaknesses and limitations' },
+    ],
+    note: 'We evaluate against measurable criteria, not only whether the dialogue sounds good.',
+    notes: 'Every dialogue is checked against the same criteria. Passes and fails are both analysed to find patterns.',
+  },
+
+  {
+    type: 'split',
+    phase: 3,
+    size: 'small',
+    title: 'What evidence exists?',
+    left: {
+      heading: 'Existing evidence',
+      items: [
+        '2 AI-written gold/example dialogues',
+        'B1 example: 4.8% words above level (passes)',
+        'A2 example: 27.8% words above level (fails)',
+        'Checker flags words like Schmerzmittel and Versicherungskarte',
+      ],
+    },
+    right: {
+      heading: 'Still missing',
+      items: [
+        'No teacher-labelled gold test set',
+        'No completed teacher ratings',
+        'No learner study',
+        'No evidence yet that learners retain more vocabulary',
+      ],
+    },
+    notes: 'Be honest here: we have technical evidence, but no teacher ratings or learner study yet.',
+  },
+
+  {
+    type: 'split',
+    phase: 3,
+    size: 'small',
+    title: 'The evaluation gap',
+    left: {
+      heading: 'The system can measure',
+      items: ['Vocabulary level', 'Word coverage', 'Length and readability', 'Grammar and other predefined checks'],
+    },
+    right: {
+      heading: 'Humans still need to judge',
+      items: ['Naturalness', 'Cultural authenticity', 'Teaching usefulness', 'Learner confidence and vocabulary retention'],
+    },
+    note: 'Automated evaluation measures compliance with programmed criteria. It does not yet establish pedagogical effectiveness.',
+    notes: 'The left side we can measure automatically. The right side needs teachers and learners, and that is our next step.',
+  },
+
+  {
+    type: 'steps',
+    phase: 4,
+    title: 'Phase 4 · Iteration and refinement',
+    question: 'How do we use evaluation results to make the system better?',
+    steps: [
+      { heading: '1. Generate', sub: 'Produce a dialogue' },
+      { heading: '2. Measure', sub: 'Run the checks' },
+      { heading: '3. Identify failures', sub: 'Missing target words, off-level words, structure', tone: 'orange' },
+      { heading: '4. Refine prompts & code', sub: 'Plan, prompt, checks, parameters or model', tone: 'orange' },
+      { heading: '5. Test again', sub: 'Does the new version improve?', tone: 'green' },
+    ],
+    loop: 'repeat the cycle',
+    notes: 'This is our feedback loop: test, find weaknesses, change the system, test again.',
+  },
+
+  {
+    type: 'table',
+    phase: 4,
+    title: 'What we changed',
+    size: 'small',
+    columns: ['Before', 'Improvement', 'Why'],
+    rows: [
+      ['Speaker names counted in checks', 'Check only spoken text', 'Avoid false errors'],
+      ['Target words not reliably placed', 'Plan target words per turn', 'Improve word coverage'],
+      ['Missing words caused failure', 'Repair by adding new sentences', 'Keep the dialogue, add missing words'],
+      ['Generic sentence structures', 'Konjunktiv II at B1', 'Better level-specific dialogue'],
+      ['Inconsistent word use', 'One example sentence per target word', 'Guide model usage'],
+      ['Poorly controlled output', 'Cap model output tokens', 'Prevent long generation time'],
+      ['Target words sometimes missing', 'Check placement before writing', 'Catch failures earlier'],
+    ],
+    notes: 'Each change came from a failure we saw in the checks.',
+  },
+
+  {
+    type: 'beforeafter',
+    phase: 4,
+    title: 'Measured improvement',
+    pairs: [
+      { label: 'Target words used ≥ 2×',
+        before: { value: '0 / 15', sub: 'first drafts' },
+        after: { value: '100%', sub: 'reported final model outputs' } },
+      { label: 'Words above level',
+        before: { value: '~5%', sub: 'earlier' },
+        after: { value: '0.7–2%', sub: 'refined (approx.)' } },
+      { label: 'Post-office dialogue, A1',
+        before: { value: '3 loops', sub: 'still did not pass' },
+        after: { value: '1 loop', sub: '71 words, each target word 3×, 0% above level' } },
+    ],
+    note: 'Reported approximate figures. This shows a technical improvement, not yet a proven improvement in learner outcomes.',
+    notes: `The same checks show clear progress: all target words now reach the minimum, fewer words are above level, and the post-office dialogue passes in one loop instead of failing after three.
+It is a technical improvement; learning outcomes still need to be tested.`,
+  },
+
+  {
+    type: 'steps',
+    phase: 5,
+    title: 'Phase 5 · Prototype deployment',
+    question: 'Can we turn the improved system into something a learner can actually use?',
+    steps: [
+      { heading: 'Learner', sub: 'Opens the web app' },
+      { heading: 'Streamlit app', sub: 'Select situation and level' },
+      { heading: 'Dialogue pipeline', sub: 'Planner · Writer · Checker · Repairer', tone: 'orange' },
+      { heading: 'Learning interface', sub: 'Dialogue · exercises · vocabulary review' },
+      { heading: 'Learner practises', sub: 'Repeats and reviews vocabulary', tone: 'green' },
+    ],
+    notes: 'The learner opens the web app, picks a situation and level, the pipeline generates the dialogue, and the learner practises with exercises and vocabulary review.',
+  },
+
+  {
+    type: 'table',
+    phase: 5,
+    title: 'Technology',
+    size: 'small',
+    columns: ['Component', 'Technology'],
+    rows: [
+      ['Frontend / app interface', 'Streamlit'],
+      ['Deployment', 'Streamlit Community Cloud'],
+      ['Source code', 'Private GitHub repository'],
+      ['Dialogue generation', 'LLM API'],
+      ['Quality control', 'Python checks'],
+      ['Learning progress', 'SQLite and spaced repetition'],
+      ['Evaluation', 'Benchmark page'],
+    ],
+    notes: 'A simple, low-cost stack: Streamlit for the app, an LLM API for generation, Python for checks, SQLite for progress.',
+  },
+
+  {
+    type: 'features',
+    phase: 5,
+    title: 'What the prototype offers',
+    items: [
+      { icon: '💬', heading: 'Dialogue practice', sub: "Scenario-based dialogues adapted to the learner's level" },
+      { icon: '✏️', heading: 'Exercises', sub: 'Gap-fill, sentence reordering and comprehension questions' },
+      { icon: '🔁', heading: 'Spaced repetition', sub: 'Review vocabulary based on learning progress' },
+      { icon: '📊', heading: 'Benchmark', sub: 'View measurements from generated dialogues' },
+    ],
+    notes: 'Four things a learner, or a teacher, can do in the app today.',
+  },
+
+  {
+    type: 'split',
+    phase: 5,
+    size: 'small',
+    title: 'How well does it meet the needs?',
+    left: {
+      heading: 'Technical achievements',
+      items: [
+        'Dialogues for different situations and CEFR levels',
+        'Swiss-specific vocabulary',
+        'Automated quality checks and repair',
+        'Exercises and vocabulary repetition',
+        '100% pass rate in the 36-dialogue DeepSeek experiment',
+      ],
+    },
+    right: {
+      heading: 'Still to validate',
+      items: [
+        'Natural and culturally appropriate, according to teachers?',
+        'Useful and intuitive, according to learners?',
+        'Do learners retain more words than with other methods?',
+        'Is a 1–3 minute generation wait acceptable?',
+      ],
+    },
+    notes: 'Technically the prototype works. Whether it helps learners is the open question for our next study.',
+  },
+
+  {
+    type: 'timeline',
+    title: 'From expert knowledge to a prototype',
+    items: [
+      { when: '1 · Understand', what: 'Teacher process + criteria' },
+      { when: '2 · Engineer', what: 'Plan · write · check · repair' },
+      { when: '3 · Evaluate', what: 'Compare models' },
+      { when: '4 · Refine', what: 'Fix failures' },
+      { when: '5 · Deploy', what: 'Streamlit app' },
+    ],
+    notes: `We started by defining what a good language teacher would do. We then translated that process into an AI workflow, tested different models and prompts, identified weaknesses, iteratively refined the system and deployed the improved solution as a working prototype.
+The technical results are promising, while the pedagogical effectiveness still needs to be validated with teachers and learners.`,
+  },
+
+  {
+    type: 'quote',
+    text: 'The technical results are promising. The pedagogical effectiveness still needs to be validated with teachers and learners.',
+    author: 'Where we stand',
   },
 
   {

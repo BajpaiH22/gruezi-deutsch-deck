@@ -1,6 +1,6 @@
 import { Deck, Slide, Notes, DefaultTemplate, fadeTransition } from 'spectacle';
-import { slides, deckTitle } from './content.js';
-import { layouts } from './components/layouts.jsx';
+import { slides, deckTitle, phaseLabels } from './content.js';
+import { layouts, PhaseTracker } from './components/layouts.jsx';
 import { theme } from './theme.js';
 
 export default function App() {
@@ -12,7 +12,7 @@ export default function App() {
       transition={fadeTransition}
     >
       {slides.map((s, i) => {
-        const { type, notes, background, ...props } = s;
+        const { type, notes, background, phase, ...props } = s;
         const Layout = layouts[type];
         return (
           <Slide key={i} backgroundColor={background || 'tertiary'}>
@@ -21,6 +21,7 @@ export default function App() {
             ) : (
               <p className="error">Unknown slide type: “{type}”</p>
             )}
+            {phase && <PhaseTracker phase={phase} labels={phaseLabels} />}
             {notes && <Notes>{notes}</Notes>}
           </Slide>
         );

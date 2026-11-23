@@ -119,7 +119,7 @@ function CountUp({ value, decimals = 0, suffix = '', prefix = '' }) {
   return <span>{prefix}{display.toFixed(decimals)}{suffix}</span>;
 }
 
-function StatsSlide({ title, items = [] }) {
+function StatsSlide({ title, items = [], note }) {
   return (
     <Stage>
       <Title>{title}</Title>
@@ -131,6 +131,7 @@ function StatsSlide({ title, items = [] }) {
           </motion.div>
         ))}
       </div>
+      {note && <motion.p className="caption left" variants={fadeUp}>{note}</motion.p>}
     </Stage>
   );
 }
@@ -162,7 +163,7 @@ function ChartSlide({ title, data = [], unit = '' }) {
   );
 }
 
-function SplitSlide({ title, left, right }) {
+function SplitSlide({ title, left, right, note, size = 'normal' }) {
   const Column = ({ col, from }) => (
     <motion.div
       className="column"
@@ -178,10 +179,11 @@ function SplitSlide({ title, left, right }) {
   return (
     <Stage>
       <Title>{title}</Title>
-      <div className="split">
+      <div className={`split ${size}`}>
         <Column col={left} from={-80} />
         <Column col={right} from={80} />
       </div>
+      {note && <motion.p className="caption left" variants={fadeUp}>{note}</motion.p>}
     </Stage>
   );
 }
@@ -586,6 +588,221 @@ function ArchitectureSlide({ title, top, system, blocks = [], pair = [], bottom 
 }
 
 /* Registry: slide `type` → component ----------------------------------- */
+
+/* Development-process layouts ------------------------------------------ */
+
+const Question = ({ children }) =>
+  children ? <motion.p className="question" variants={fadeUp}>{children}</motion.p> : null;
+
+/** Five phases in a snake: 1 → 2 → 3 ↓ 4 → 5, click a phase for its detail. */
+function PhasesSlide({ title, phases = [], loopLabel, hint }) {
+  const [open, setOpen] = useState(null);
+  const [p1, p2, p3, p4, p5] = phases;
+  const Box = ({ p, i }) => (
+    <motion.button
+      type="button"
+      className={`phase-box ${open === i ? 'on' : ''}`}
+      variants={pop}
+      onClick={() => setOpen(open === i ? null : i)}
+    >
+      <span className="phase-n">{i + 1}</span>
+      <strong>{p.heading}</strong>
+      <span>{p.question}</span>
+    </motion.button>
+  );
+  const Arrow = ({ children = '→' }) => <motion.span className="phase-arrow" variants={fadeUp}>{children}</motion.span>;
+  const detail = open !== null ? phases[open] : null;
+  return (
+    <Stage variants={stagger(0.12, 0.2)}>
+      <Title>{title}</Title>
+      <div className="phases">
+        <div className="phase-row">
+          <Box p={p1} i={0} /><Arrow /><Box p={p2} i={1} /><Arrow /><Box p={p3} i={2} />
+        </div>
+        <div className="phase-row end"><Arrow>↓</Arrow></div>
+        <div className="phase-row end">
+          <Box p={p5} i={4} />
+          <motion.div className="phase-back" variants={fadeUp}>
+            <span>←</span>
+            <span className="dashed">{loopLabel} ⇢</span>
+          </motion.div>
+          <Box p={p4} i={3} />
+        </div>
+      </div>
+      <motion.div className="phase-detail" variants={fadeUp}>
+        {detail ? (
+          <><strong>{open + 1}. {detail.verb}</strong> — {detail.logic}</>
+        ) : (
+          <span className="muted">{hint}</span>
+        )}
+      </motion.div>
+    </Stage>
+  );
+}
+
+/** One step box; `split` turns it into two stacked boxes (e.g. pass / fail). */
+function StepBox({ step }) {
+  if (step.split) {
+    return (
+      <div className="step-split">
+        {step.split.map((s, i) => <StepBox key={i} step={s} />)}
+      </div>
+    );
+  }
+  return (
+    <div className={`step-box ${step.tone || ''}`}>
+      <strong>{step.heading}</strong>
+      {step.sub && <span>{step.sub}</span>}
+    </div>
+  );
+}
+
+/** Horizontal flow of steps, optionally framed (group), with input/output ends and a loop-back line. */
+function StepsSlide({ title, question, input, group, steps = [], output, loop, note }) {
+  const row = (
+    <div className="steps-row">
+      {steps.map((st, i) => (
+        <motion.div key={i} className="steps-item" variants={pop}>
+          {i > 0 && <span className="steps-arrow">→</span>}
+          <StepBox step={st} />
+        </motion.div>
+      ))}
+    </div>
+  );
+  return (
+    <Stage variants={stagger(0.15, 0.2)}>
+      <Title>{title}</Title>
+      <Question>{question}</Question>
+      <div className="steps">
+        {input && (
+          <motion.div className="steps-item" variants={pop}>
+            <StepBox step={{ ...input, tone: 'dark' }} /><span className="steps-arrow">→</span>
+          </motion.div>
+        )}
+        {group ? (
+          <motion.div className="steps-group" variants={stagger(0.15, 0.1)}>
+            <motion.span className="steps-group-label" variants={fadeUp}>{group}</motion.span>
+            {row}
+          </motion.div>
+        ) : row}
+        {output && (
+          <motion.div className="steps-item" variants={pop}>
+            <span className="steps-arrow">→</span><StepBox step={{ ...output, tone: 'dark' }} />
+          </motion.div>
+        )}
+      </div>
+      {loop && (
+        <motion.div
+          className="steps-loop"
+          style={{ originX: 1 }}
+          variants={{ hidden: { opacity: 0, scaleX: 0 }, show: { opacity: 1, scaleX: 1, transition: { duration: 0.8, delay: 1.2 } } }}
+        >
+          <span>↻ {loop}</span>
+        </motion.div>
+      )}
+      {note && <motion.p className="caption left" variants={fadeUp}>{note}</motion.p>}
+    </Stage>
+  );
+}
+
+/** Bar chart on the left, numbers table on the right. */
+function BenchmarkSlide({ title, question, unit = '', data = [], columns = [], rows = [], note }) {
+  const max = Math.max(...data.map((d) => d.value), 1);
+  return (
+    <Stage>
+      <Title>{title}</Title>
+      <Question>{question}</Question>
+      <div className="bench">
+        <div className="bench-chart">
+          {data.map((d, i) => (
+            <div key={i} className="bar-col">
+              <motion.div className={`bar-value ${d.highlight ? 'hl' : ''}`} variants={fadeUp}>{d.value}{unit}</motion.div>
+              <motion.div
+                className="bar"
+                style={{ originY: 1, height: `${(d.value / max) * 100}%` }}
+                variants={{
+                  hidden: { scaleY: 0 },
+                  show: { scaleY: 1, transition: { duration: 0.9, delay: 0.3 + i * 0.15, ease: 'easeOut' } },
+                }}
+              >
+                <div className={`bar-fill ${d.highlight ? 'hl' : ''}`} style={{ height: '100%' }} />
+              </motion.div>
+              <div className="bar-label">{d.label}</div>
+            </div>
+          ))}
+        </div>
+        <motion.div className="table-wrap bench-table" variants={fadeUp}>
+          <table className="deck-table">
+            <thead><tr>{columns.map((c, i) => <th key={i}>{c}</th>)}</tr></thead>
+            <tbody>{rows.map((r, i) => <tr key={i}>{r.map((c, j) => <td key={j}>{c}</td>)}</tr>)}</tbody>
+          </table>
+        </motion.div>
+      </div>
+      {note && <motion.p className="caption left" variants={fadeUp}>{note}</motion.p>}
+    </Stage>
+  );
+}
+
+/** Rows of before → after numbers. */
+function BeforeAfterSlide({ title, question, pairs = [], note }) {
+  return (
+    <Stage variants={stagger(0.25, 0.2)}>
+      <Title>{title}</Title>
+      <Question>{question}</Question>
+      <div className="ba">
+        {pairs.map((p, i) => (
+          <motion.div key={i} className="ba-row" variants={stagger(0.25, 0)}>
+            <motion.div className="ba-label" variants={fadeUp}>{p.label}</motion.div>
+            <motion.div className="ba-card before" variants={fadeUp}>
+              <span className="ba-tag">Before</span>
+              <strong>{p.before.value}</strong>
+              <span>{p.before.sub}</span>
+            </motion.div>
+            <motion.span className="ba-arrow" variants={fadeUp}>→</motion.span>
+            <motion.div className="ba-card after" variants={pop}>
+              <span className="ba-tag">After</span>
+              <strong>{p.after.value}</strong>
+              <span>{p.after.sub}</span>
+            </motion.div>
+          </motion.div>
+        ))}
+      </div>
+      {note && <motion.p className="caption left" variants={fadeUp}>{note}</motion.p>}
+    </Stage>
+  );
+}
+
+/** Grid of feature cards with an icon. */
+function FeaturesSlide({ title, question, items = [], note }) {
+  return (
+    <Stage variants={stagger(0.15, 0.2)}>
+      <Title>{title}</Title>
+      <Question>{question}</Question>
+      <div className="features">
+        {items.map((it, i) => (
+          <motion.div key={i} className="feature" variants={pop}>
+            <div className="feature-icon">{it.icon}</div>
+            <h3>{it.heading}</h3>
+            <p>{it.sub}</p>
+          </motion.div>
+        ))}
+      </div>
+      {note && <motion.p className="caption left" variants={fadeUp}>{note}</motion.p>}
+    </Stage>
+  );
+}
+
+/** Small 1–5 phase tracker shown in the corner of process slides. */
+export function PhaseTracker({ phase, labels = [] }) {
+  return (
+    <div className="phase-tracker">
+      {labels.map((l, i) => (
+        <span key={i} className={i + 1 === phase ? 'on' : i + 1 < phase ? 'past' : ''}>{i + 1} {l}</span>
+      ))}
+    </div>
+  );
+}
+
 export const layouts = {
   title: TitleSlide,
   bullets: BulletsSlide,
@@ -605,4 +822,9 @@ export const layouts = {
   agentflow: AgentFlowSlide,
   layers: LayersSlide,
   architecture: ArchitectureSlide,
+  phases: PhasesSlide,
+  steps: StepsSlide,
+  benchmark: BenchmarkSlide,
+  beforeafter: BeforeAfterSlide,
+  features: FeaturesSlide,
 };
