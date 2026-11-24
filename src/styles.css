@@ -288,13 +288,18 @@ body { margin: 0; background: #0f172a; }
 
 /* model comparison with many models */
 .bench { align-items: center; }
-.bench-left { flex: 0.75; display: flex; flex-direction: column; }
+.bench-left { flex: 1; display: flex; flex-direction: column; }
 .bench-chart-label { font-size: 18px; color: var(--muted); margin: 0 0 .4em; text-transform: uppercase; letter-spacing: .08em; }
 .bench-left .bench-chart { flex: none; gap: 1rem; height: 300px; }
 .bench-left .bar-label { font-size: 15px; text-align: center; line-height: 1.2; min-height: 2.4em; }
 .bench-left .bar-value { font-size: 22px; }
-.bench-table { flex: 1.9; }
-.bench-table .deck-table { font-size: 16px; }
-.bench-table .deck-table th { font-size: 13px; letter-spacing: .04em; vertical-align: bottom; }
+.bench-table { flex: 1.5; padding: .4rem .8rem; }
+.bench-table .deck-table { font-size: 14px; }
+.bench-table .deck-table th { font-size: 11px; letter-spacing: .04em; vertical-align: bottom; padding: .4em .5em; }
+.bench-table .deck-table td { padding: .35em .5em; }
 .bench-table .deck-table td:first-child { white-space: normal; }
 .bench-table .deck-table td.best { color: #4ade80; font-weight: 800; }
+
+/* bar track: fixed-height area for the bars; padding leaves room for the value label */
+.bench-chart .bar-track { flex: 1; min-height: 0; width: 100%; box-sizing: border-box; padding-top: 34px; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; }
+.bench-chart .bar-track .bar { flex-shrink: 0; }

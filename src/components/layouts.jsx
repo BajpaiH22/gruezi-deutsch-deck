@@ -731,17 +731,20 @@ function BenchmarkSlide({ title, question, chartLabel, unit = '', data = [], col
         <div className="bench-chart">
           {data.map((d, i) => (
             <div key={i} className="bar-col">
-              <motion.div className={`bar-value ${d.highlight ? 'hl' : ''}`} variants={fadeUp}>{d.value}{unit}</motion.div>
-              <motion.div
-                className="bar"
-                style={{ originY: 1, height: `${(d.value / max) * 100}%` }}
-                variants={{
-                  hidden: { scaleY: 0 },
-                  show: { scaleY: 1, transition: { duration: 0.9, delay: 0.3 + i * 0.15, ease: 'easeOut' } },
-                }}
-              >
-                <div className={`bar-fill ${d.highlight ? 'hl' : ''}`} style={{ height: '100%' }} />
-              </motion.div>
+              {/* the track has a fixed height, so each bar is exactly value / max of it */}
+              <div className="bar-track">
+                <motion.div className={`bar-value ${d.highlight ? 'hl' : ''}`} variants={fadeUp}>{d.value}{unit}</motion.div>
+                <motion.div
+                  className="bar"
+                  style={{ originY: 1, height: `${(d.value / max) * 100}%` }}
+                  variants={{
+                    hidden: { scaleY: 0 },
+                    show: { scaleY: 1, transition: { duration: 0.9, delay: 0.3 + i * 0.15, ease: 'easeOut' } },
+                  }}
+                >
+                  <div className={`bar-fill ${d.highlight ? 'hl' : ''}`} style={{ height: '100%' }} />
+                </motion.div>
+              </div>
               <div className="bar-label">{d.label}</div>
             </div>
           ))}
