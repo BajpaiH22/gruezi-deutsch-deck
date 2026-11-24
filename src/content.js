@@ -567,26 +567,16 @@ The technical results are promising, while the pedagogical effectiveness still n
   },
 
   {
-    type: 'split',
-    size: 'small',
-    title: 'Key insight: a new user group',
-    left: {
-      heading: 'Found in our evaluation interviews',
-      items: [
-        'A mother told us the family moved from the French-speaking part to the German-speaking part of Switzerland',
-        'Her son is in grade 3 and is learning German at school',
-        'Speaking Schweizerdeutsch with friends does not give him the practice he needs',
-      ],
-    },
-    right: {
-      heading: 'Why Grüezi Deutsch helps',
-      items: [
-        'He can practise everyday situations with the right words and grammar',
-        'New user group: children of families moving within Switzerland, not only adult newcomers from abroad',
-      ],
-    },
-    notes: `In our evaluation interviews we found a user group we had not planned for.
-A mother explained that the family moved from the French-speaking part of Switzerland to the German-speaking part. Her son is in grade 3 and is learning German. Talking with his friends in Schweizerdeutsch is not the practice he needs, but an app like this can help him practise better, with the right words and grammar.`,
+    type: 'title',
+    kicker: 'Emergent finding · evaluation interviews',
+    title: 'A new user group',
+    subtitle: 'Children of families moving within Switzerland, not only adult newcomers from abroad',
+    notes: `Found in our evaluation interviews:
+- A mother told us the family moved from the French-speaking part to the German-speaking part of Switzerland.
+- Her son is in grade 3 and is learning German at school.
+- Speaking Schweizerdeutsch with friends does not give him the practice he needs.
+Why Grüezi Deutsch helps:
+- He can practise everyday situations with the right words and grammar.`,
   },
 /* ── HIDDEN SLIDES: Agentic AI reference-architecture mapping ──────────
    Kept here but not shown. To show them again, delete this line
