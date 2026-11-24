@@ -126,9 +126,18 @@ export const slides = [
       to: '„Wo ist der Perron 3?“',
       note: 'We keep the Swiss words (Perron) but not the dialect. Dialects differ by region and have no standard spelling.',
     },
+    levels: {
+      label: 'Levels in the app:',
+      items: [
+        { code: 'A1', name: 'Beginner' },
+        { code: 'A2', name: 'Elementary' },
+        { code: 'B1', name: 'Intermediate' },
+      ],
+    },
     notes:
       'Following Herbert Simon’s bounded rationality, we cannot solve everything with our limited time, information and brainpower. ' +
-      'So we narrowed the scope from Swiss German dialect to Swiss High German. Click the phrase to replay the change.',
+      'So we narrowed the scope from Swiss German dialect to Swiss High German. Click the phrase to replay the change. ' +
+      'The app covers the CEFR levels A1, A2 and B1.',
   },
 
     {
@@ -556,7 +565,34 @@ The technical results are promising, while the pedagogical effectiveness still n
     text: 'The strength is not just multiple agents. It is LLM generation, deterministic checks, targeted repair and Swiss language resources working together.',
     author: 'Our key insight',
   },
-{
+
+  {
+    type: 'split',
+    size: 'small',
+    title: 'Key insight: a new user group',
+    left: {
+      heading: 'Found in our evaluation interviews',
+      items: [
+        'A mother told us the family moved from the French-speaking part to the German-speaking part of Switzerland',
+        'Her son is in grade 3 and is learning German at school',
+        'Speaking Schweizerdeutsch with friends does not give him the practice he needs',
+      ],
+    },
+    right: {
+      heading: 'Why Grüezi Deutsch helps',
+      items: [
+        'He can practise everyday situations with the right words and grammar',
+        'New user group: children of families moving within Switzerland, not only adult newcomers from abroad',
+      ],
+    },
+    notes: `In our evaluation interviews we found a user group we had not planned for.
+A mother explained that the family moved from the French-speaking part of Switzerland to the German-speaking part. Her son is in grade 3 and is learning German. Talking with his friends in Schweizerdeutsch is not the practice he needs, but an app like this can help him practise better, with the right words and grammar.`,
+  },
+/* ── HIDDEN SLIDES: Agentic AI reference-architecture mapping ──────────
+   Kept here but not shown. To show them again, delete this line
+   and the closing line below.
+
+  {
     type: 'bullets',
     title: 'Does it fit the Agentic AI Reference Architecture?',
     reveal: 'click',
@@ -674,6 +710,8 @@ The technical results are promising, while the pedagogical effectiveness still n
       ['Human-in-the-loop', 'Only if a teacher actually reviews output in the workflow'],
     ],
   },
+
+── END HIDDEN SLIDES ─────────────────────────────────────────────── */
 
 
   {

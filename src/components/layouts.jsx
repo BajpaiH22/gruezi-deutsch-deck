@@ -398,7 +398,7 @@ function EvidenceSlide({ title, stats = [], cards = [], footnote }) {
 }
 
 /** Bounded rationality: constraints narrow the scope; the "from" phrase morphs into "to". */
-function ScopeSlide({ title, author, constraints = [], from, to, example }) {
+function ScopeSlide({ title, author, constraints = [], from, to, example, levels }) {
   const active = useIsActive();
   const [switched, setSwitched] = useState(false);
   useEffect(() => {
@@ -447,6 +447,14 @@ function ScopeSlide({ title, author, constraints = [], from, to, example }) {
           <span className="scope-arrow small">→</span>
           <span className="standard">{example.to}</span>
           {example.note && <em>{example.note}</em>}
+        </motion.div>
+      )}
+      {levels && (
+        <motion.div className="scope-levels" animate={{ opacity: switched ? 1 : 0, y: switched ? 0 : 20 }} transition={{ duration: 0.6, delay: 0.7 }}>
+          <span className="scope-levels-label">{levels.label}</span>
+          {levels.items.map((l, i) => (
+            <span key={i} className="level-chip"><strong>{l.code}</strong>{l.name}</span>
+          ))}
         </motion.div>
       )}
     </Stage>
