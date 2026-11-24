@@ -340,8 +340,8 @@ Each phase has evidence behind it, and some things still await validation. Click
       { id: 'design', heading: 'Design cycle', sub: 'Build · Test · Refine', links: [3, 5],
         detail: 'Build, evaluate and iteratively refine the prototype.' },
     ],
-    hint: 'The six blocks are the Peffers DSR process; the cycles show how the research connects to real-world needs, existing knowledge and iterative development. Click any block.',
-    citation: 'Source: Peffers, K., Tuunanen, T., Rothenberger, M. A., & Chatterjee, S. (2007). A Design Science Research Methodology for Information Systems Research. Journal of Management Information Systems, 24(3), 45–77.',
+    hint: 'Six DSR activities (Peffers) with three cycles around them (Hevner). Click any block.',
+    citation: 'Sources: Peffers, K., Tuunanen, T., Rothenberger, M. A., & Chatterjee, S. (2007). A Design Science Research Methodology for Information Systems Research. Journal of Management Information Systems, 24(3), 45–77. · Hevner, A. R. (2007). A Three Cycle View of Design Science Research. Scandinavian Journal of Information Systems, 19(2), 87–92.',
     notes: `We follow Design Science Research. The six blocks are the Peffers process: problem identification, objectives, design and development, demonstration, evaluation and communication.
 Around them are three cycles. The relevance cycle connects us to real users and the Swiss context. The rigor cycle brings in CEFR, literature and existing knowledge. The design cycle is our build, test, refine loop: evaluation results go back into design and development.
 Click a cycle to highlight the activities it feeds.`,
@@ -395,8 +395,13 @@ The first three are fully measurable; the last two still need people to judge th
     ],
     output: { heading: 'Output', sub: 'Improved dialogue' },
     note: 'Instead of one big prompt, the job is split into smaller tasks.',
+    facts: [
+      'Temperature 0.3 for repairs makes fixes repeatable.',
+      'Without an output-token limit, one DeepSeek call took 9 minutes, so every call is now capped (src/config.py).',
+    ],
     notes: `We do not ask the AI to do everything in one prompt.
-The planner decides the turns and where each target word goes, the writer writes, Python checks, and the repairer fixes only what was flagged.`,
+The planner decides the turns and where each target word goes, the writer writes, Python checks, and the repairer fixes only what was flagged.
+Two settings matter: repairs run at temperature 0.3 so fixes are repeatable, and every call has an output-token limit, because without it one DeepSeek call took 9 minutes.`,
   },
 
   {
@@ -467,7 +472,12 @@ This is evidence from our experiment, not proof that DeepSeek is better in gener
       { heading: 'Analyse results', sub: 'Find recurring weaknesses and limitations' },
     ],
     note: 'We evaluate against measurable criteria, not only whether the dialogue sounds good.',
-    notes: 'Every dialogue is checked against the same criteria. Passes and fails are both analysed to find patterns.',
+    facts: [
+      'Best prompt setup: plan with word placement plus the two repairs, with DeepSeek.',
+      'Its first plan placed every target word correctly in 36 of 36 dialogues, against 4 of 36 for GPT-4o-mini.',
+    ],
+    notes: `Every dialogue is checked against the same criteria. Passes and fails are both analysed to find patterns.
+Our best setup is planning with word placement plus the two repairs, using DeepSeek: its first plan placed every target word correctly in 36 of 36 dialogues, against 4 of 36 for GPT-4o-mini.`,
   },
 
   {

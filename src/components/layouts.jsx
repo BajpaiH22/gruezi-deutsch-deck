@@ -658,7 +658,7 @@ function StepBox({ step }) {
 }
 
 /** Horizontal flow of steps, optionally framed (group), with input/output ends and a loop-back line. */
-function StepsSlide({ title, question, input, group, steps = [], output, loop, note }) {
+function StepsSlide({ title, question, input, group, steps = [], output, loop, note, facts = [] }) {
   const row = (
     <div className="steps-row">
       {steps.map((st, i) => (
@@ -701,6 +701,11 @@ function StepsSlide({ title, question, input, group, steps = [], output, loop, n
         </motion.div>
       )}
       {note && <motion.p className="caption left" variants={fadeUp}>{note}</motion.p>}
+      {facts.length > 0 && (
+        <motion.ul className="facts" variants={stagger(0.2, 0.9)}>
+          {facts.map((f, n) => <motion.li key={n} variants={fadeUp}>{f}</motion.li>)}
+        </motion.ul>
+      )}
     </Stage>
   );
 }

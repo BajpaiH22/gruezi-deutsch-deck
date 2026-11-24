@@ -275,3 +275,7 @@ body { margin: 0; background: #0f172a; }
 .dsr-refine { position: absolute; transform: translate(-50%, -50%); background: #0f172a; border: 1px solid #3c6fc2; color: #93c5fd; border-radius: 999px; padding: .1em .7em; font-size: 15px; font-weight: 600; }
 .dsr-detail { margin-top: .6rem; font-size: 20px; padding: .6em 1.1em; }
 .citation { font-size: 15px; color: #7b8aa1; margin: .6em 0 0; }
+
+/* highlighted facts under a flow */
+.facts { list-style: none; padding: 0; margin: 1rem 0 0; display: flex; flex-direction: column; gap: .55rem; }
+.facts li { background: var(--panel); border-left: 5px solid #f0a65a; border-radius: 10px; padding: .5em 1em; font-size: 21px; color: #e2e8f0; }
