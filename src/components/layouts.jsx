@@ -719,13 +719,15 @@ function StepsSlide({ title, question, input, group, steps = [], output, loop, n
 }
 
 /** Bar chart on the left, numbers table on the right. */
-function BenchmarkSlide({ title, question, unit = '', data = [], columns = [], rows = [], note }) {
+function BenchmarkSlide({ title, question, chartLabel, unit = '', data = [], columns = [], rows = [], note }) {
   const max = Math.max(...data.map((d) => d.value), 1);
   return (
     <Stage>
       <Title>{title}</Title>
       <Question>{question}</Question>
       <div className="bench">
+        <div className="bench-left">
+        {chartLabel && <motion.p className="bench-chart-label" variants={fadeUp}>{chartLabel}</motion.p>}
         <div className="bench-chart">
           {data.map((d, i) => (
             <div key={i} className="bar-col">
@@ -744,10 +746,15 @@ function BenchmarkSlide({ title, question, unit = '', data = [], columns = [], r
             </div>
           ))}
         </div>
+        </div>
         <motion.div className="table-wrap bench-table" variants={fadeUp}>
           <table className="deck-table">
             <thead><tr>{columns.map((c, i) => <th key={i}>{c}</th>)}</tr></thead>
-            <tbody>{rows.map((r, i) => <tr key={i}>{r.map((c, j) => <td key={j}>{c}</td>)}</tr>)}</tbody>
+            <tbody>{rows.map((r, i) => (
+              <tr key={i}>{r.map((c, j) => (
+                <td key={j} className={c && c.best ? 'best' : ''}>{c && typeof c === 'object' ? c.text : c}</td>
+              ))}</tr>
+            ))}</tbody>
           </table>
         </motion.div>
       </div>

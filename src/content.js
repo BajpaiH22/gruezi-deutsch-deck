@@ -335,20 +335,27 @@ This is why the next phases matter.`,
     phase: 2,
     title: 'Model comparison',
     question: 'Results for 36 dialogues per model using the full loop',
+    chartLabel: 'Passed after the loop',
     unit: '%',
     data: [
-      { label: 'DeepSeek', value: 100, highlight: true },
+      { label: 'DeepSeek V4.1 Flash', value: 100, highlight: true },
       { label: 'Llama 8B', value: 78 },
+      { label: 'Llama 8B, best of 3', value: 78 },
       { label: 'GPT-4o-mini', value: 78 },
     ],
-    columns: ['Model', 'Pass rate', 'Sec/dialogue', 'Cost/dialogue'],
+    // { text, best: true } shows a value in bold green
+    columns: ['', 'DeepSeek V4.1 Flash', 'Llama 8B', 'Llama 8B, best of 3 drafts', 'GPT-4o-mini'],
     rows: [
-      ['DeepSeek', '100%', '73', '$0.0095'],
-      ['Llama 8B', '78%', '6', '$0.0003'],
-      ['GPT-4o-mini', '78%', '19', '$0.0012'],
+      ['First draft passed', '47%', '33%', '28%', '19%'],
+      ['Passed after the loop', { text: '100%', best: true }, '78%', '78%', '78%'],
+      ['Words above the level (after loop)', { text: '0.7%', best: true }, '1.9%', '2.1%', '2.0%'],
+      ['Words (aim: about 80)', { text: '87', best: true }, '135', '142', '109'],
+      ['Target words used 5+ times', { text: '0.28', best: true }, '0.5', '0.94', '0.44'],
+      ['Seconds per dialogue', '73', { text: '6', best: true }, '13', '19'],
+      ['Cost per dialogue (USD)', '0.0095', { text: '0.0003', best: true }, '0.0010', '0.0012'],
     ],
     note: "DeepSeek's planner placed all target words correctly in 36/36 dialogues (GPT-4o-mini: 4/36). Reported experimental results, not independently validated benchmarks.",
-    notes: `DeepSeek passed every dialogue, but it is the slowest. Llama is fastest and cheapest but passes 78%.
+    notes: `DeepSeek V4.1 Flash passed every dialogue after the loop, stayed closest to the 80-word aim and had the fewest words above the level, but it is the slowest. Llama 8B is fastest and cheapest but passes 78%; taking the best of 3 Llama drafts did not raise the pass rate. GPT-4o-mini had the weakest first drafts.
 This is evidence from our experiment, not proof that DeepSeek is better in general.`,
   },
 
@@ -448,8 +455,11 @@ Our best setup is planning with word placement plus the two repairs, using DeepS
       ['Inconsistent word use', 'One example sentence per target word', 'Guide model usage'],
       ['Poorly controlled output', 'Cap model output tokens', 'Prevent long generation time'],
       ['Target words sometimes missing', 'Check placement before writing', 'Catch failures earlier'],
+      ['One temperature for every step', 'Temperature 0.7 for planning and writing, 0.3 for repairs', 'Natural dialogues, repeatable fixes'],
+      ['Llama 3.1 8B as the default model', 'Switched to DeepSeek V4.1 Flash', 'Highest pass rate (100%) and fewest off-level words'],
     ],
-    notes: 'Each change came from a failure we saw in the checks.',
+    notes: `Each change came from a failure we saw in the checks.
+The last two rows: planning and writing run at temperature 0.7 for natural variety, repairs at 0.3 so fixes are repeatable; and on 23 November we switched the default model from Llama 3.1 8B to DeepSeek V4.1 Flash after the model comparison.`,
   },
 
   {
