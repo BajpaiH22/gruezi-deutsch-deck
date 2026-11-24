@@ -303,3 +303,6 @@ body { margin: 0; background: #0f172a; }
 /* bar track: fixed-height area for the bars; padding leaves room for the value label */
 .bench-chart .bar-track { flex: 1; min-height: 0; width: 100%; box-sizing: border-box; padding-top: 34px; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; }
 .bench-chart .bar-track .bar { flex-shrink: 0; }
+
+/* page number, bottom left next to the full-screen button */
+.page-number { position: absolute; left: 58px; bottom: 24px; font-family: "Inter", "Segoe UI", system-ui, sans-serif; font-size: 16px; color: #94a3b8; font-variant-numeric: tabular-nums; pointer-events: none; }

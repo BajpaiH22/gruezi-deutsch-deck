@@ -22,6 +22,7 @@ export default function App() {
               <p className="error">Unknown slide type: “{type}”</p>
             )}
             {phase && <PhaseTracker phase={phase} labels={phaseLabels} />}
+            <div className="page-number">{i + 1} / {slides.length}</div>
             {notes && <Notes>{notes}</Notes>}
           </Slide>
         );
