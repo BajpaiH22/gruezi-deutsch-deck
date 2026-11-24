@@ -23,6 +23,7 @@
 //    benchmark    bar chart + numbers table
 //    beforeafter  rows of Before → After numbers
 //    features     cards with an emoji icon
+//    dsr          Peffers DSR activities + relevance/rigor/design cycles
 //  `question:` adds the green guiding question under a title.
 //  `phase: 1…5` shows the phase tracker in the top-right corner.
 //
@@ -41,8 +42,8 @@ export const slides = [
     type: 'title',
     kicker: 'DPE project · Grüezi Deutsch',
     title: 'Grüezi Deutsch',
-    subtitle: 'Helping newcomers integrate by learning Swiss High German Switzerland',
-    notes: 'Our goal to develop the application is to aid faster and quicker integration for newcomers in Switzerland.',
+    subtitle: 'Helping newcomers practise the German Switzerland actually speaks',
+    notes: 'Our goal: help newcomers integrate in Switzerland better and faster.',
   },
 
   {
@@ -55,7 +56,7 @@ export const slides = [
     resultNote: 'A Helvetism is a word or usage typical of Switzerland. The Latin name of the country lives on in it.',
     notes:
       'CH stands for Confoederatio Helvetica, the Latin name of the Swiss Confederation. ' +
-      'From Helvetica comes “Helvetism”: a word or usage that is typically Swiss, and has been integrated from differnt languages like French, Italian, Romansch, like Velo or Perron.',
+      'From Helvetica comes “Helvetism”: a word or usage that is typically Swiss, like Velo or Perron.',
   },
 
   {
@@ -64,7 +65,7 @@ export const slides = [
     left: {
       heading: 'Hochdeutsch',
       sub: 'Standard German',
-      text: 'The standard language taught in courses and textbooks.',
+      text: 'The standard language taught in courses and textbooks. This is what Lena learned for her A1 exam.',
       examples: ['Fahrrad', 'Bahnsteig', 'Fahrkarte', 'Bürgersteig', 'Straße (ß)'],
     },
     right: {
@@ -96,7 +97,7 @@ export const slides = [
     cards: [
       {
         heading: 'User group',
-        text: 'Newcomers in Switzerland who are learning Swiss High German (A1–B1).',
+        text: 'Newcomers in Switzerland who are learning High German (A1–B1).',
       },
       {
         heading: 'Purpose',
@@ -128,6 +129,54 @@ export const slides = [
     notes:
       'Following Herbert Simon’s bounded rationality, we cannot solve everything with our limited time, information and brainpower. ' +
       'So we narrowed the scope from Swiss German dialect to Swiss High German. Click the phrase to replay the change.',
+  },
+
+  {
+    type: 'bullets',
+    title: 'Does it fit the Agentic AI Reference Architecture?',
+    reveal: 'click',
+    items: [
+      'Yes, quite well, but Grüezi Deutsch is a more constrained, task-specific agent system',
+      'It doesn’t have to match every box',
+      'We map our existing components to the architectural layers',
+      'Strongest matches: Reasoning Layer, Orchestration Engine, Agents, Tools, Memory, Observability',
+    ],
+    notes: 'Press the right arrow to reveal each point.',
+  },
+
+  {
+    type: 'table',
+    title: 'Mapping (1/2): user, reasoning, agents',
+    size: 'small',
+    columns: ['Reference architecture', 'Grüezi Deutsch', 'What it does'],
+    rows: [
+      ['User', 'Learner', 'Selects situation, CEFR level and target words'],
+      ['User Goal', 'A suitable Swiss Standard German dialogue', 'Practise a real-life situation at their level'],
+      ['Reasoning Layer', 'Planner + Writer + Repairer', 'Plans, generates and improves the dialogue'],
+      ['Task decomposition', 'Planner', 'Breaks the dialogue into roles, turns, target words and structure'],
+      ['Agent 1', 'Planner', 'Creates a dialogue plan'],
+      ['Agent 2', 'Writer', 'Generates the dialogue based on the plan'],
+      ['Agent 3', 'Repairer', 'Fixes the specific problems the checker found'],
+      ['Orchestration Engine', 'Pipeline / controller (pipeline.py)', 'Controls order, loops, decisions and stopping'],
+    ],
+  },
+
+  {
+    type: 'table',
+    title: 'Mapping (2/2): tools, memory, output',
+    size: 'small',
+    columns: ['Reference architecture', 'Grüezi Deutsch', 'What it does'],
+    rows: [
+      ['Orchestration Schema', 'Structured plans, JSON outputs, check reports', 'Defines what each step produces and passes on'],
+      ['Tools 1, 2', 'Word lists, Helvetism lookup, CEFR resources, checks', 'Factual resources and deterministic validation'],
+      ['Systems 1–3', 'Local code, SQLite, language-checking tools', 'Supporting software and data'],
+      ['Integration Layer', 'Python functions, model API, Streamlit', 'Connects the components and the external model'],
+      ['Agent-to-Agent APIs', 'Planner → Writer → Checker → Repairer', 'Hands structured outputs and issues between steps'],
+      ['Memory Management', 'SQLite, review history, spaced repetition', 'Stores word progress and exercise results'],
+      ['Observability', 'Check reports, loop history, benchmark, logs', 'Tracks quality, failures, loops and performance'],
+      ['Response Personalization', 'Level, situation, target words, Swiss resources', 'Adapts the dialogue to the learner'],
+      ['Task Output', 'Dialogue, Swiss-word explanations, exercises', 'A practice experience for the learner'],
+    ],
   },
 
   {
@@ -177,7 +226,7 @@ export const slides = [
         letter: 'D', name: 'Tools & Systems',
         lead: 'Resources the roles can use.',
         items: ['CEFR word lists · Helvetism list', 'LanguageTool (de-CH) · spaCy', 'Readability and validation functions', 'Systems: Python, Streamlit, SQLite, LLM provider'],
-        note: 'Many tools are local Python functions, no external APIs used.',
+        note: 'Many tools are local Python functions rather than external APIs, but they play the same role.',
       },
       {
         letter: 'E', name: 'Integration Layer',
@@ -201,6 +250,26 @@ export const slides = [
         lead: 'Built into generation, not a separate agent.',
         items: ['CEFR level and situation', 'Target words and sentence patterns', 'Swiss vocabulary', 'Exercises and spaced repetition'],
       },
+    ],
+  },
+
+  {
+    type: 'table',
+    title: 'How we adapt the generic architecture',
+    size: 'small',
+    columns: ['Generic component', 'For Grüezi Deutsch'],
+    rows: [
+      ['Agent 1, 2, 3', 'Name them Planner, Writer and Repairer'],
+      ['Reasoning Layer', 'Keep it, containing the agent workflow'],
+      ['Orchestration Schema', 'Structured outputs, JSON schemas, contracts between modules'],
+      ['Orchestration Engine', 'pipeline.py as the central controller'],
+      ['Integration Layer', 'Python, model connection and hand-offs'],
+      ['Tools', 'CEFR lists, Helvetisms, spaCy, LanguageTool, validation functions'],
+      ['Systems 1–3', 'Named supporting systems instead of numbered boxes'],
+      ['Memory Management', 'SQLite and spaced-repetition progress'],
+      ['Observability', 'Checker, metrics, loop history, benchmark'],
+      ['Response Personalization', 'Level, situation, target words, Swiss context'],
+      ['Human-in-the-loop', 'Only if a teacher actually reviews output in the workflow'],
     ],
   },
 
@@ -245,20 +314,37 @@ Each phase has evidence behind it, and some things still await validation. Click
   },
 
   {
-    type: 'steps',
+    type: 'dsr',
     phase: 1,
-    title: "Phase 1 · The expert's process",
-    question: "What would an ideal expert or Teacher do to solve the learner's problem?",
-    steps: [
-      { heading: "Understand the learner's situation", sub: 'e.g. doctor, post office, supermarket' },
-      { heading: 'Adapt language to CEFR level', sub: 'Vocabulary, sentence structures, difficulty' },
-      { heading: 'Integrate Swiss-specific language', sub: 'Velo, parkieren, Grüezi …' },
-      { heading: 'Repeat and practise target words', sub: 'Meet each word several times' },
-      { heading: 'Check and deliver a natural dialogue', sub: 'Quality, relevance, appropriateness', tone: 'green' },
+    title: 'Phase 1 · Our research process (DSR)',
+    activities: [
+      { id: 'a1', heading: 'Problem identification', sub: 'Newcomers lack Swiss Standard German practice',
+        detail: 'Explore newcomer difficulties and the potential gap in Swiss-specific learning resources. (Relevance cycle)' },
+      { id: 'a2', heading: 'Objectives', sub: 'Practical, level-adapted Swiss everyday dialogues',
+        detail: 'Define what the solution should achieve: practical dialogues, level adaptation and Swiss vocabulary.' },
+      { id: 'a3', heading: 'Design & development', sub: 'Planner → Writer → Checker → Repairer',
+        detail: 'Build the AI workflow, prompts, checks, exercises and prototype. (Design cycle)' },
+      { id: 'a4', heading: 'Demonstration', sub: 'Scenarios, e.g. post office, doctor',
+        detail: 'Use the prototype in real-life scenarios to show how it solves the problem.' },
+      { id: 'a5', heading: 'Evaluation', sub: 'Benchmarks, teacher review, user testing',
+        detail: 'Measure performance and assess quality; refine the artifact based on results.' },
+      { id: 'a6', heading: 'Communication', sub: 'Report, prototype & presentation',
+        detail: 'Share the problem, artifact, methodology, results and limitations.' },
     ],
-    note: 'The expert: German teachers for adult A1–B1 learners in Switzerland.',
-    notes: `Our expert is a German teacher for adult A1 to B1 learners in Switzerland.
-A good teacher understands the situation, adapts the language to the level, brings in Swiss words, repeats the target words, and checks that the dialogue sounds natural.`,
+    // links = which activities (1–6) each cycle feeds; clicking a cycle highlights them
+    cycles: [
+      { id: 'relevance', heading: 'Relevance cycle', sub: 'Real users · Needs · Swiss context', links: [1, 4, 5],
+        detail: 'Real-world problem, user needs, newcomer context.' },
+      { id: 'rigor', heading: 'Rigor cycle', sub: 'CEFR · Literature · Existing knowledge', links: [2, 3, 5],
+        detail: 'Existing knowledge, CEFR, research and methods.' },
+      { id: 'design', heading: 'Design cycle', sub: 'Build · Test · Refine', links: [3, 5],
+        detail: 'Build, evaluate and iteratively refine the prototype.' },
+    ],
+    hint: 'The six blocks are the Peffers DSR process; the cycles show how the research connects to real-world needs, existing knowledge and iterative development. Click any block.',
+    citation: 'Source: Peffers, K., Tuunanen, T., Rothenberger, M. A., & Chatterjee, S. (2007). A Design Science Research Methodology for Information Systems Research. Journal of Management Information Systems, 24(3), 45–77.',
+    notes: `We follow Design Science Research. The six blocks are the Peffers process: problem identification, objectives, design and development, demonstration, evaluation and communication.
+Around them are three cycles. The relevance cycle connects us to real users and the Swiss context. The rigor cycle brings in CEFR, literature and existing knowledge. The design cycle is our build, test, refine loop: evaluation results go back into design and development.
+Click a cycle to highlight the activities it feeds.`,
   },
 
   {
@@ -580,65 +666,10 @@ The technical results are promising, while the pedagogical effectiveness still n
     author: 'Our key insight',
   },
 
-
   {
     type: 'end',
     title: 'Danke · Merci · Grazie',
     subtitle: 'Questions?',
     contact: 'Grüezi Deutsch · DPE project, BFH',
-  },
-   {
-    type: 'table',
-    title: 'Mapping (1/2): user, reasoning, agents',
-    size: 'small',
-    columns: ['Reference architecture', 'Grüezi Deutsch', 'What it does'],
-    rows: [
-      ['User', 'Learner', 'Selects situation, CEFR level and target words'],
-      ['User Goal', 'A suitable Swiss Standard German dialogue', 'Practise a real-life situation at their level'],
-      ['Reasoning Layer', 'Planner + Writer + Repairer', 'Plans, generates and improves the dialogue'],
-      ['Task decomposition', 'Planner', 'Breaks the dialogue into roles, turns, target words and structure'],
-      ['Agent 1', 'Planner', 'Creates a dialogue plan'],
-      ['Agent 2', 'Writer', 'Generates the dialogue based on the plan'],
-      ['Agent 3', 'Repairer', 'Fixes the specific problems the checker found'],
-      ['Orchestration Engine', 'Pipeline / controller (pipeline.py)', 'Controls order, loops, decisions and stopping'],
-    ],
-  },
-
-  {
-    type: 'table',
-    title: 'Mapping (2/2): tools, memory, output',
-    size: 'small',
-    columns: ['Reference architecture', 'Grüezi Deutsch', 'What it does'],
-    rows: [
-      ['Orchestration Schema', 'Structured plans, JSON outputs, check reports', 'Defines what each step produces and passes on'],
-      ['Tools 1, 2', 'Word lists, Helvetism lookup, CEFR resources, checks', 'Factual resources and deterministic validation'],
-      ['Systems 1–3', 'Local code, SQLite, language-checking tools', 'Supporting software and data'],
-      ['Integration Layer', 'Python functions, model API, Streamlit', 'Connects the components and the external model'],
-      ['Agent-to-Agent APIs', 'Planner → Writer → Checker → Repairer', 'Hands structured outputs and issues between steps'],
-      ['Memory Management', 'SQLite, review history, spaced repetition', 'Stores word progress and exercise results'],
-      ['Observability', 'Check reports, loop history, benchmark, logs', 'Tracks quality, failures, loops and performance'],
-      ['Response Personalization', 'Level, situation, target words, Swiss resources', 'Adapts the dialogue to the learner'],
-      ['Task Output', 'Dialogue, Swiss-word explanations, exercises', 'A practice experience for the learner'],
-    ],
-  },
-
-  {
-    type: 'table',
-    title: 'How we adapt the generic architecture',
-    size: 'small',
-    columns: ['Generic component', 'For Grüezi Deutsch'],
-    rows: [
-      ['Agent 1, 2, 3', 'Name them Planner, Writer and Repairer'],
-      ['Reasoning Layer', 'Keep it, containing the agent workflow'],
-      ['Orchestration Schema', 'Structured outputs, JSON schemas, contracts between modules'],
-      ['Orchestration Engine', 'pipeline.py as the central controller'],
-      ['Integration Layer', 'Python, model connection and hand-offs'],
-      ['Tools', 'CEFR lists, Helvetisms, spaCy, LanguageTool, validation functions'],
-      ['Systems 1–3', 'Named supporting systems instead of numbered boxes'],
-      ['Memory Management', 'SQLite and spaced-repetition progress'],
-      ['Observability', 'Checker, metrics, loop history, benchmark'],
-      ['Response Personalization', 'Level, situation, target words, Swiss context'],
-      ['Human-in-the-loop', 'Only if a teacher actually reviews output in the workflow'],
-    ],
   },
 ];

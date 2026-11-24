@@ -792,6 +792,115 @@ function FeaturesSlide({ title, question, items = [], note }) {
   );
 }
 
+/** Peffers DSR process (6 activities) with the three cycles drawn around it.
+ *  Activities appear first, then the cycles and their dashed links.
+ *  Click any block for its explanation; a cycle also highlights its activities. */
+const DSR_BOX = { w: 186, h: 124, y: 158, gap: 24 };
+const dsrX = (i) => i * (DSR_BOX.w + DSR_BOX.gap);
+const dsrCx = (i) => dsrX(i) + DSR_BOX.w / 2;
+const DSR_BOTTOM = DSR_BOX.y + DSR_BOX.h;
+const DSR_CYCLES = {
+  relevance: { x: 380, y: 0, w: 480, h: 66, color: '#4ade80',
+    paths: [
+      `M440 66 V112 H${dsrCx(0)} V${DSR_BOX.y - 4}`,
+      `M${dsrCx(3)} 66 V${DSR_BOX.y - 4}`,
+      `M800 66 V112 H${dsrCx(4)} V${DSR_BOX.y - 4}`,
+    ] },
+  rigor: { x: 0, y: 372, w: 400, h: 66, color: '#c4b5fd',
+    paths: [
+      `M${dsrCx(1)} 372 V${DSR_BOTTOM + 4}`,
+      `M350 372 V338 H${dsrCx(2) - 20} V${DSR_BOTTOM + 4}`,
+      `M400 405 H600 V318 H${dsrCx(4) - 22} V${DSR_BOTTOM + 4}`,
+    ] },
+  design: { x: 700, y: 372, w: 420, h: 66, color: '#60a5fa',
+    paths: [
+      `M${dsrCx(4) + 22} ${DSR_BOTTOM + 2} V368`,
+      `M760 372 V350 H${dsrCx(2) + 20} V${DSR_BOTTOM + 4}`,
+    ],
+    label: { x: 660, y: 350, text: 'Refine' } },
+};
+
+function DsrSlide({ title, activities = [], cycles = [], hint, citation }) {
+  const [focus, setFocus] = useState(null);
+  const toggle = (id) => setFocus(focus === id ? null : id);
+  const focusedCycle = cycles.find((c) => c.id === focus);
+  const lit = (n) => focusedCycle?.links?.includes(n);
+  const detail = activities.find((a) => a.id === focus) || focusedCycle;
+  const draw = (delay) => ({
+    hidden: { pathLength: 0, opacity: 0 },
+    show: { pathLength: 1, opacity: 1, transition: { duration: 0.9, delay } },
+  });
+  const cycleIn = (i) => ({
+    hidden: { opacity: 0, scale: 0.85 },
+    show: { opacity: 1, scale: 1, transition: { duration: 0.5, delay: 1.5 + i * 0.35 } },
+  });
+  return (
+    <Stage className="stage dsr-stage" variants={stagger(0.15, 0.2)}>
+      <Title>{title}</Title>
+      <div className="dsr">
+        <svg className="dsr-lines" viewBox="0 0 1236 438" width="1236" height="438">
+          <defs>
+            {['#94a3b8', '#4ade80', '#c4b5fd', '#60a5fa'].map((c) => (
+              <marker key={c} id={`dsr-arrow-${c.slice(1)}`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" fill={c} />
+              </marker>
+            ))}
+          </defs>
+          {activities.slice(0, -1).map((_, i) => (
+            <motion.path key={i} d={`M${dsrX(i) + DSR_BOX.w + 2} ${DSR_BOX.y + DSR_BOX.h / 2} H${dsrX(i + 1) - 3}`}
+              stroke="#94a3b8" strokeWidth="2" fill="none" markerEnd="url(#dsr-arrow-94a3b8)"
+              variants={draw(0.35 + i * 0.15)} />
+          ))}
+          {cycles.map((c, ci) => {
+            const g = DSR_CYCLES[c.id];
+            if (!g) return null;
+            const dim = focusedCycle && focusedCycle.id !== c.id;
+            return (
+              <g key={c.id} opacity={dim ? 0.15 : 1} style={{ transition: 'opacity .3s' }}>
+                {g.paths.map((d, k) => (
+                  <motion.path key={k} d={d} stroke={g.color} strokeWidth={focusedCycle?.id === c.id ? 3 : 2}
+                    strokeDasharray="6 5" fill="none" markerEnd={`url(#dsr-arrow-${g.color.slice(1)})`}
+                    variants={draw(1.8 + ci * 0.35 + k * 0.1)} />
+                ))}
+              </g>
+            );
+          })}
+        </svg>
+        {DSR_CYCLES.design.label && (
+          <motion.span className="dsr-refine" style={{ left: DSR_CYCLES.design.label.x, top: DSR_CYCLES.design.label.y }}
+            variants={cycleIn(2.2)}>↺ {DSR_CYCLES.design.label.text}</motion.span>
+        )}
+        {activities.map((a, i) => (
+          <motion.button type="button" key={a.id}
+            className={`dsr-box ${focus === a.id ? 'on' : ''} ${lit(i + 1) ? 'lit' : ''}`}
+            style={{ left: dsrX(i), top: DSR_BOX.y, width: DSR_BOX.w, height: DSR_BOX.h }}
+            variants={pop} onClick={() => toggle(a.id)}>
+            <strong>{i + 1}. {a.heading}</strong>
+            <span>{a.sub}</span>
+          </motion.button>
+        ))}
+        {cycles.map((c, ci) => {
+          const g = DSR_CYCLES[c.id];
+          if (!g) return null;
+          return (
+            <motion.button type="button" key={c.id}
+              className={`dsr-cycle ${c.id} ${focus === c.id ? 'on' : ''}`}
+              style={{ left: g.x, top: g.y, width: g.w, height: g.h }}
+              variants={cycleIn(ci)} onClick={() => toggle(c.id)}>
+              <strong>{c.heading}</strong>
+              <span>{c.sub}</span>
+            </motion.button>
+          );
+        })}
+      </div>
+      <motion.div className="phase-detail dsr-detail" variants={fadeUp}>
+        {detail ? <><strong>{detail.heading}:</strong> {detail.detail}</> : <span className="muted">{hint}</span>}
+      </motion.div>
+      {citation && <motion.p className="citation" variants={fadeUp}>{citation}</motion.p>}
+    </Stage>
+  );
+}
+
 /** Small 1–5 phase tracker shown in the corner of process slides. */
 export function PhaseTracker({ phase, labels = [] }) {
   return (
@@ -827,4 +936,5 @@ export const layouts = {
   benchmark: BenchmarkSlide,
   beforeafter: BeforeAfterSlide,
   features: FeaturesSlide,
+  dsr: DsrSlide,
 };
