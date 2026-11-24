@@ -183,30 +183,8 @@ export const slides = [
   // ─── How we built it: the 5-phase development process ───────────
 
   {
-    type: 'phases',
-    title: 'How we built it: five phases',
-    phases: [
-      { heading: 'Solution Understanding', question: 'What does a good expert do?', verb: 'Understand',
-        logic: 'define what good language-learning support looks like.' },
-      { heading: 'Prompt Engineering', question: 'How do we teach AI to do it?', verb: 'Engineer',
-        logic: 'turn that knowledge into prompts, instructions and a workflow.' },
-      { heading: 'Prompt Evaluation', question: 'How well does AI perform?', verb: 'Evaluate',
-        logic: "measure the AI's performance against evidence and criteria." },
-      { heading: 'Iteration & Refinement', question: 'How do we improve it?', verb: 'Refine',
-        logic: 'identify failure patterns and improve prompts, code and models.' },
-      { heading: 'Prototype Deployment', question: 'Can learners use it?', verb: 'Deploy',
-        logic: 'make the improved system accessible as an app.' },
-    ],
-    loopLabel: 'Future improvements',
-    hint: 'Understand what a good expert does → teach AI to imitate it → test → improve → put it into a working app. Click a phase.',
-    notes: `Grüezi Deutsch follows a cycle: understand what a good human expert does, teach AI to imitate that process, test how well it performs, improve it, and put it into a working app.
-Each phase has evidence behind it, and some things still await validation. Click each box to show its one-line logic.`,
-  },
-
-  {
     type: 'dsr',
-    phase: 1,
-    title: 'Phase 1 · Our research process (DSR)',
+    title: 'How we built it: research process (DSR)',
     activities: [
       { id: 'a1', heading: 'Problem identification', sub: 'Newcomers lack Swiss Standard German practice',
         detail: 'Explore newcomer difficulties and the potential gap in Swiss-specific learning resources. (Relevance cycle)' },
@@ -236,6 +214,33 @@ Each phase has evidence behind it, and some things still await validation. Click
 Around them are three cycles. The relevance cycle connects us to real users and the Swiss context. The rigor cycle brings in CEFR, literature and existing knowledge. The design cycle is our build, test, refine loop: evaluation results go back into design and development.
 Click a cycle to highlight the activities it feeds.`,
   },
+
+/* ── HIDDEN SLIDE: five-phases overview (replaced by the DSR slide) ──
+   To show it again, delete this line and the closing line below.
+
+  {
+    type: 'phases',
+    title: 'How we built it: five phases',
+    phases: [
+      { heading: 'Solution Understanding', question: 'What does a good expert do?', verb: 'Understand',
+        logic: 'define what good language-learning support looks like.' },
+      { heading: 'Prompt Engineering', question: 'How do we teach AI to do it?', verb: 'Engineer',
+        logic: 'turn that knowledge into prompts, instructions and a workflow.' },
+      { heading: 'Prompt Evaluation', question: 'How well does AI perform?', verb: 'Evaluate',
+        logic: "measure the AI's performance against evidence and criteria." },
+      { heading: 'Iteration & Refinement', question: 'How do we improve it?', verb: 'Refine',
+        logic: 'identify failure patterns and improve prompts, code and models.' },
+      { heading: 'Prototype Deployment', question: 'Can learners use it?', verb: 'Deploy',
+        logic: 'make the improved system accessible as an app.' },
+    ],
+    loopLabel: 'Future improvements',
+    hint: 'Understand what a good expert does → teach AI to imitate it → test → improve → put it into a working app. Click a phase.',
+    notes: `Grüezi Deutsch follows a cycle: understand what a good human expert does, teach AI to imitate that process, test how well it performs, improve it, and put it into a working app.
+Each phase has evidence behind it, and some things still await validation. Click each box to show its one-line logic.`,
+  },
+── END HIDDEN SLIDE ─────────────────────────────────────────────── */
+
+
 
   {
     type: 'table',
