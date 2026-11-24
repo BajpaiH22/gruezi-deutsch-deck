@@ -112,12 +112,12 @@ export const slides = [
 
   {
     type: 'scope',
-    title: 'Scope: bounded rationality',
+    title: 'Scope',
     author: 'Herbert Simon: we decide within limits of time, information and brainpower',
     constraints: [
       { icon: '⏱', label: 'Limited time (one semester)' },
-      { icon: '📚', label: 'Limited information' },
-      { icon: '🧠', label: 'Limited brainpower' },
+      { icon: '📚', label: 'Limited information (user interviews, course & AI knowldege)' },
+      { icon: '🧠', label: 'Limited brainpower (4 people)' },
     ],
     from: 'Schweizerdeutsch',
     to: 'Swiss Hochdeutsch',
@@ -131,57 +131,9 @@ export const slides = [
       'So we narrowed the scope from Swiss German dialect to Swiss High German. Click the phrase to replay the change.',
   },
 
-  {
-    type: 'bullets',
-    title: 'Does it fit the Agentic AI Reference Architecture?',
-    reveal: 'click',
-    items: [
-      'Yes, quite well, but Grüezi Deutsch is a more constrained, task-specific agent system',
-      'It doesn’t have to match every box',
-      'We map our existing components to the architectural layers',
-      'Strongest matches: Reasoning Layer, Orchestration Engine, Agents, Tools, Memory, Observability',
-    ],
-    notes: 'Press the right arrow to reveal each point.',
-  },
-
-  {
-    type: 'table',
-    title: 'Mapping (1/2): user, reasoning, agents',
-    size: 'small',
-    columns: ['Reference architecture', 'Grüezi Deutsch', 'What it does'],
-    rows: [
-      ['User', 'Learner', 'Selects situation, CEFR level and target words'],
-      ['User Goal', 'A suitable Swiss Standard German dialogue', 'Practise a real-life situation at their level'],
-      ['Reasoning Layer', 'Planner + Writer + Repairer', 'Plans, generates and improves the dialogue'],
-      ['Task decomposition', 'Planner', 'Breaks the dialogue into roles, turns, target words and structure'],
-      ['Agent 1', 'Planner', 'Creates a dialogue plan'],
-      ['Agent 2', 'Writer', 'Generates the dialogue based on the plan'],
-      ['Agent 3', 'Repairer', 'Fixes the specific problems the checker found'],
-      ['Orchestration Engine', 'Pipeline / controller (pipeline.py)', 'Controls order, loops, decisions and stopping'],
-    ],
-  },
-
-  {
-    type: 'table',
-    title: 'Mapping (2/2): tools, memory, output',
-    size: 'small',
-    columns: ['Reference architecture', 'Grüezi Deutsch', 'What it does'],
-    rows: [
-      ['Orchestration Schema', 'Structured plans, JSON outputs, check reports', 'Defines what each step produces and passes on'],
-      ['Tools 1, 2', 'Word lists, Helvetism lookup, CEFR resources, checks', 'Factual resources and deterministic validation'],
-      ['Systems 1–3', 'Local code, SQLite, language-checking tools', 'Supporting software and data'],
-      ['Integration Layer', 'Python functions, model API, Streamlit', 'Connects the components and the external model'],
-      ['Agent-to-Agent APIs', 'Planner → Writer → Checker → Repairer', 'Hands structured outputs and issues between steps'],
-      ['Memory Management', 'SQLite, review history, spaced repetition', 'Stores word progress and exercise results'],
-      ['Observability', 'Check reports, loop history, benchmark, logs', 'Tracks quality, failures, loops and performance'],
-      ['Response Personalization', 'Level, situation, target words, Swiss resources', 'Adapts the dialogue to the learner'],
-      ['Task Output', 'Dialogue, Swiss-word explanations, exercises', 'A practice experience for the learner'],
-    ],
-  },
-
-  {
+    {
     type: 'agentflow',
-    title: 'Grüezi Deutsch drawn as an agent system',
+    title: 'Grüezi Deutsch: a task - specific agent system',
     systemLabel: 'Orchestration Engine · pipeline.py',
     learner: 'Learner',
     goal: 'Goal: practise an everyday situation in Swiss Standard German',
@@ -201,78 +153,7 @@ export const slides = [
       'If the checker finds issues, the Repairer fixes only the flagged lines, at most 3 times. Then the output goes to the learner with exercises.',
   },
 
-  {
-    type: 'layers',
-    title: 'What each layer means in our project',
-    hint: 'Click a layer to see the detail.',
-    layers: [
-      {
-        letter: 'A', name: 'User & User Goal',
-        lead: 'Adult learner of German in Switzerland who wants to practise a real situation at their CEFR level.',
-        items: ['Situation (e.g. Arzttermin)', 'Level: A1, A2 or B1', 'Target vocabulary', 'Optional custom situation'],
-      },
-      {
-        letter: 'B', name: 'Reasoning Layer',
-        lead: 'Where the LLM-driven roles live.',
-        items: ['Planner: roles, structure, goals, target words, key phrases', 'Writer: the dialogue at the right level and in Swiss context', 'Repairer: rewrites only the lines the checker flagged'],
-        note: 'Conceptual roles: in the code they are model calls, not independent autonomous agents.',
-      },
-      {
-        letter: 'C', name: 'Orchestration Engine',
-        lead: 'pipeline.py is the conductor. It does not write the dialogue, it controls the others.',
-        items: ['Which step runs first', 'When the checker runs', 'Whether the Repairer is activated', 'When to stop (max 3 loops)', 'Which dialogue is returned'],
-      },
-      {
-        letter: 'D', name: 'Tools & Systems',
-        lead: 'Resources the roles can use.',
-        items: ['CEFR word lists · Helvetism list', 'LanguageTool (de-CH) · spaCy', 'Readability and validation functions', 'Systems: Python, Streamlit, SQLite, LLM provider'],
-        note: 'Many tools are local Python functions rather than external APIs, but they play the same role.',
-      },
-      {
-        letter: 'E', name: 'Integration Layer',
-        lead: 'Connects the components.',
-        items: ['Planner output becomes Writer input', 'Check report becomes Repairer input', 'Structured JSON outputs and model API', 'Streamlit ↔ backend ↔ SQLite'],
-      },
-      {
-        letter: 'F', name: 'Memory Management',
-        lead: 'Persistent application data and learner progress.',
-        items: ['System memory: dialogues, review history, word progress', 'Learner memory: which words to practise again, and when'],
-        note: 'No long-running conversational memory between agents; this is app data, not an autonomous agent’s memory.',
-      },
-      {
-        letter: 'G', name: 'Observability',
-        lead: 'Checker reports and the benchmark page.',
-        items: ['Off-level vocabulary %, sentence complexity', 'Target-word coverage, grammar errors', 'Swiss vocabulary use', 'Loop count, pass/fail, latency, benchmark'],
-        note: 'Full per-call logging and traces are proposed improvements.',
-      },
-      {
-        letter: 'H', name: 'Response Personalization',
-        lead: 'Built into generation, not a separate agent.',
-        items: ['CEFR level and situation', 'Target words and sentence patterns', 'Swiss vocabulary', 'Exercises and spaced repetition'],
-      },
-    ],
-  },
-
-  {
-    type: 'table',
-    title: 'How we adapt the generic architecture',
-    size: 'small',
-    columns: ['Generic component', 'For Grüezi Deutsch'],
-    rows: [
-      ['Agent 1, 2, 3', 'Name them Planner, Writer and Repairer'],
-      ['Reasoning Layer', 'Keep it, containing the agent workflow'],
-      ['Orchestration Schema', 'Structured outputs, JSON schemas, contracts between modules'],
-      ['Orchestration Engine', 'pipeline.py as the central controller'],
-      ['Integration Layer', 'Python, model connection and hand-offs'],
-      ['Tools', 'CEFR lists, Helvetisms, spaCy, LanguageTool, validation functions'],
-      ['Systems 1–3', 'Named supporting systems instead of numbered boxes'],
-      ['Memory Management', 'SQLite and spaced-repetition progress'],
-      ['Observability', 'Checker, metrics, loop history, benchmark'],
-      ['Response Personalization', 'Level, situation, target words, Swiss context'],
-      ['Human-in-the-loop', 'Only if a teacher actually reviews output in the workflow'],
-    ],
-  },
-
+ 
   {
     type: 'architecture',
     title: 'The simplified architecture',
@@ -359,7 +240,7 @@ Click a cycle to highlight the activities it feeds.`,
       ["Teacher's correction", 'Automated checker + repair loop'],
       ["Teacher's learning materials", 'Dialogue and exercises'],
     ],
-    note: "This is the expert-inspired design hypothesis. It does not mean teachers have already validated the app's behaviour.",
+    note: "This is the expert-inspired design hypothesis.",
     notes: `Each part of the teacher's knowledge becomes a part of the system.
 Be clear: this is our design hypothesis. Teachers have not yet validated how the app behaves.`,
   },
@@ -675,6 +556,125 @@ The technical results are promising, while the pedagogical effectiveness still n
     text: 'The strength is not just multiple agents. It is LLM generation, deterministic checks, targeted repair and Swiss language resources working together.',
     author: 'Our key insight',
   },
+{
+    type: 'bullets',
+    title: 'Does it fit the Agentic AI Reference Architecture?',
+    reveal: 'click',
+    items: [
+      'Yes, quite well, but Grüezi Deutsch is a more constrained, task-specific agent system',
+      'It doesn’t have to match every box',
+      'We map our existing components to the architectural layers',
+      'Strongest matches: Reasoning Layer, Orchestration Engine, Agents, Tools, Memory, Observability',
+    ],
+    notes: 'Press the right arrow to reveal each point.',
+  },
+
+  {
+    type: 'table',
+    title: 'Mapping (1/2): user, reasoning, agents',
+    size: 'small',
+    columns: ['Reference architecture', 'Grüezi Deutsch', 'What it does'],
+    rows: [
+      ['User', 'Learner', 'Selects situation, CEFR level and target words'],
+      ['User Goal', 'A suitable Swiss Standard German dialogue', 'Practise a real-life situation at their level'],
+      ['Reasoning Layer', 'Planner + Writer + Repairer', 'Plans, generates and improves the dialogue'],
+      ['Task decomposition', 'Planner', 'Breaks the dialogue into roles, turns, target words and structure'],
+      ['Agent 1', 'Planner', 'Creates a dialogue plan'],
+      ['Agent 2', 'Writer', 'Generates the dialogue based on the plan'],
+      ['Agent 3', 'Repairer', 'Fixes the specific problems the checker found'],
+      ['Orchestration Engine', 'Pipeline / controller (pipeline.py)', 'Controls order, loops, decisions and stopping'],
+    ],
+  },
+
+  {
+    type: 'table',
+    title: 'Mapping (2/2): tools, memory, output',
+    size: 'small',
+    columns: ['Reference architecture', 'Grüezi Deutsch', 'What it does'],
+    rows: [
+      ['Orchestration Schema', 'Structured plans, JSON outputs, check reports', 'Defines what each step produces and passes on'],
+      ['Tools 1, 2', 'Word lists, Helvetism lookup, CEFR resources, checks', 'Factual resources and deterministic validation'],
+      ['Systems 1–3', 'Local code, SQLite, language-checking tools', 'Supporting software and data'],
+      ['Integration Layer', 'Python functions, model API, Streamlit', 'Connects the components and the external model'],
+      ['Agent-to-Agent APIs', 'Planner → Writer → Checker → Repairer', 'Hands structured outputs and issues between steps'],
+      ['Memory Management', 'SQLite, review history, spaced repetition', 'Stores word progress and exercise results'],
+      ['Observability', 'Check reports, loop history, benchmark, logs', 'Tracks quality, failures, loops and performance'],
+      ['Response Personalization', 'Level, situation, target words, Swiss resources', 'Adapts the dialogue to the learner'],
+      ['Task Output', 'Dialogue, Swiss-word explanations, exercises', 'A practice experience for the learner'],
+    ],
+  },
+ {
+    type: 'layers',
+    title: 'What each layer means in our project',
+    hint: 'Click a layer to see the detail.',
+    layers: [
+      {
+        letter: 'A', name: 'User & User Goal',
+        lead: 'Adult learner of German in Switzerland who wants to practise a real situation at their CEFR level.',
+        items: ['Situation (e.g. Arzttermin)', 'Level: A1, A2 or B1', 'Target vocabulary', 'Optional custom situation'],
+      },
+      {
+        letter: 'B', name: 'Reasoning Layer',
+        lead: 'Where the LLM-driven roles live.',
+        items: ['Planner: roles, structure, goals, target words, key phrases', 'Writer: the dialogue at the right level and in Swiss context', 'Repairer: rewrites only the lines the checker flagged'],
+        note: 'Conceptual roles: in the code they are model calls, not independent autonomous agents.',
+      },
+      {
+        letter: 'C', name: 'Orchestration Engine',
+        lead: 'pipeline.py is the conductor. It does not write the dialogue, it controls the others.',
+        items: ['Which step runs first', 'When the checker runs', 'Whether the Repairer is activated', 'When to stop (max 3 loops)', 'Which dialogue is returned'],
+      },
+      {
+        letter: 'D', name: 'Tools & Systems',
+        lead: 'Resources the roles can use.',
+        items: ['CEFR word lists · Helvetism list', 'LanguageTool (de-CH) · spaCy', 'Readability and validation functions', 'Systems: Python, Streamlit, SQLite, LLM provider'],
+        note: 'Many tools are local Python functions rather than external APIs, but they play the same role.',
+      },
+      {
+        letter: 'E', name: 'Integration Layer',
+        lead: 'Connects the components.',
+        items: ['Planner output becomes Writer input', 'Check report becomes Repairer input', 'Structured JSON outputs and model API', 'Streamlit ↔ backend ↔ SQLite'],
+      },
+      {
+        letter: 'F', name: 'Memory Management',
+        lead: 'Persistent application data and learner progress.',
+        items: ['System memory: dialogues, review history, word progress', 'Learner memory: which words to practise again, and when'],
+        note: 'No long-running conversational memory between agents; this is app data, not an autonomous agent’s memory.',
+      },
+      {
+        letter: 'G', name: 'Observability',
+        lead: 'Checker reports and the benchmark page.',
+        items: ['Off-level vocabulary %, sentence complexity', 'Target-word coverage, grammar errors', 'Swiss vocabulary use', 'Loop count, pass/fail, latency, benchmark'],
+        note: 'Full per-call logging and traces are proposed improvements.',
+      },
+      {
+        letter: 'H', name: 'Response Personalization',
+        lead: 'Built into generation, not a separate agent.',
+        items: ['CEFR level and situation', 'Target words and sentence patterns', 'Swiss vocabulary', 'Exercises and spaced repetition'],
+      },
+    ],
+  },
+
+  {
+    type: 'table',
+    title: 'How we adapt the generic architecture',
+    size: 'small',
+    columns: ['Generic component', 'For Grüezi Deutsch'],
+    rows: [
+      ['Agent 1, 2, 3', 'Name them Planner, Writer and Repairer'],
+      ['Reasoning Layer', 'Keep it, containing the agent workflow'],
+      ['Orchestration Schema', 'Structured outputs, JSON schemas, contracts between modules'],
+      ['Orchestration Engine', 'pipeline.py as the central controller'],
+      ['Integration Layer', 'Python, model connection and hand-offs'],
+      ['Tools', 'CEFR lists, Helvetisms, spaCy, LanguageTool, validation functions'],
+      ['Systems 1–3', 'Named supporting systems instead of numbered boxes'],
+      ['Memory Management', 'SQLite and spaced-repetition progress'],
+      ['Observability', 'Checker, metrics, loop history, benchmark'],
+      ['Response Personalization', 'Level, situation, target words, Swiss context'],
+      ['Human-in-the-loop', 'Only if a teacher actually reviews output in the workflow'],
+    ],
+  },
+
 
   {
     type: 'end',
